@@ -1,0 +1,175 @@
+{
+  "name": "dsa-note-helper",
+  "displayName": "DSA Note Helper",
+  "description": "DSA note assistant: smart linting, AI fill (via GitHub Copilot), MCQ quiz, and revision tracking.",
+  "version": "0.1.3",
+  "publisher": "nakul",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other",
+    "AI",
+    "Chat"
+  ],
+  "activationEvents": [
+    "onLanguage:markdown",
+    "onView:dsa-helper-quiz",
+    "onView:dsa-helper-revision"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "dsa-helper.enforceTemplate",
+        "title": "DSA Note: Enforce Template"
+      },
+      {
+        "command": "dsa-helper.fillDetails",
+        "title": "DSA Note: Fill Details with AI"
+      },
+      {
+        "command": "dsa-helper.startQuiz",
+        "title": "DSA Note: Start MCQ Quiz",
+        "icon": "$(beaker)"
+      },
+      {
+        "command": "dsa-helper.showRevisionTree",
+        "title": "DSA Note: Refresh Revision Sidebar"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "dsa-helper-sidebar",
+          "title": "DSA Note Helper",
+          "icon": "$(book)"
+        }
+      ]
+    },
+    "views": {
+      "dsa-helper-sidebar": [
+        {
+          "id": "dsa-helper-revision",
+          "name": "Revision Dashboard",
+          "type": "tree"
+        },
+        {
+          "id": "dsa-helper-quiz",
+          "name": "Active Recall Quiz",
+          "type": "webview"
+        }
+      ]
+    },
+    "chatParticipants": [
+      {
+        "id": "dsa-helper.dsa",
+        "fullName": "DSA Helper",
+        "name": "dsa",
+        "description": "DSA notes assistant for linting, templates, and complexity analysis",
+        "isSticky": true,
+        "commands": [
+          {
+            "name": "lint",
+            "description": "Lint the current DSA note for missing structures"
+          },
+          {
+            "name": "mcq",
+            "description": "Generate practice questions based on current note"
+          },
+          {
+            "name": "dryrun",
+            "description": "Generate a dry-run trace table for the code"
+          },
+          {
+            "name": "complexity",
+            "description": "Analyze time and space complexity"
+          },
+          {
+            "name": "template",
+            "description": "Insert boilerplate for a specific DSA topic"
+          }
+        ]
+      }
+    ],
+    "configuration": {
+      "title": "DSA Note Helper",
+      "properties": {
+        "dsa-helper.aiProvider": {
+          "type": "string",
+          "default": "copilot",
+          "enum": [
+            "copilot",
+            "gemini",
+            "ollama",
+            "custom"
+          ],
+          "enumDescriptions": [
+            "GitHub Copilot (built-in, no API key needed)",
+            "Google Gemini API (requires Gemini API Key)",
+            "Local Ollama Server (e.g. http://localhost:11434)",
+            "Custom OpenAI-compatible API (OpenRouter, DeepSeek, LocalAI, etc.)"
+          ],
+          "description": "Select AI Provider for generating note details and quiz questions."
+        },
+        "dsa-helper.copilotModel": {
+          "type": "string",
+          "default": "gpt-4o",
+          "enum": [
+            "gpt-4o",
+            "gpt-4o-mini",
+            "claude-sonnet-4-5",
+            "o3-mini"
+          ],
+          "description": "Copilot model family to use when Provider is set to 'copilot'."
+        },
+        "dsa-helper.geminiApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "API Key for Google Gemini API (Required if Provider is 'gemini')."
+        },
+        "dsa-helper.geminiModel": {
+          "type": "string",
+          "default": "gemini-1.5-flash",
+          "description": "Gemini model name (e.g. gemini-1.5-flash, gemini-1.5-pro)."
+        },
+        "dsa-helper.ollamaUrl": {
+          "type": "string",
+          "default": "http://localhost:11434",
+          "description": "Endpoint URL for local Ollama server (Required if Provider is 'ollama')."
+        },
+        "dsa-helper.ollamaModel": {
+          "type": "string",
+          "default": "llama3",
+          "description": "Ollama model name (e.g. llama3, mistral, qwen2.5-coder)."
+        },
+        "dsa-helper.customEndpoint": {
+          "type": "string",
+          "default": "https://api.openai.com/v1",
+          "description": "OpenAI-compatible API endpoint URL (Required if Provider is 'custom')."
+        },
+        "dsa-helper.customApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "API Key for Custom OpenAI-compatible API."
+        },
+        "dsa-helper.customModel": {
+          "type": "string",
+          "default": "gpt-4o",
+          "description": "Model name for Custom API (e.g. gpt-4o, deepseek-chat, mistral-large)."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "npm version patch --no-git-tag-version && npx @vscode/vsce package --no-dependencies --allow-missing-repository"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.7",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^4.9.5"
+  }
+}
