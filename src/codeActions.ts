@@ -22,7 +22,7 @@ export class DsaCodeActionProvider implements vscode.CodeActionProvider {
     private createAiFillAction(document: vscode.TextDocument, diagnostic: vscode.Diagnostic): vscode.CodeAction {
         const action = new vscode.CodeAction('Fill placeholder using AI', vscode.CodeActionKind.QuickFix);
         action.command = {
-            command: 'dsa-helper.fillDetails',
+            command: 'algonote.fillDetails',
             title: 'Fill Details with AI',
             tooltip: 'Uses Gemini/Ollama to fill the current missing details'
         };
@@ -34,7 +34,7 @@ export class DsaCodeActionProvider implements vscode.CodeActionProvider {
     private createTemplateFix(document: vscode.TextDocument, diagnostic: vscode.Diagnostic): vscode.CodeAction {
         const action = new vscode.CodeAction('Enforce complete DSA template', vscode.CodeActionKind.QuickFix);
         action.command = {
-            command: 'dsa-helper.enforceTemplate',
+            command: 'algonote.enforceTemplate',
             title: 'Enforce Template',
             tooltip: 'Applies standard boilerplate missing headers'
         };

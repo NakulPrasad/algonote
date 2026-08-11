@@ -8,7 +8,7 @@ suite('AI Service Unit Test Suite', () => {
     let config: vscode.WorkspaceConfiguration;
 
     suiteSetup(async () => {
-        config = vscode.workspace.getConfiguration('dsa-helper');
+        config = vscode.workspace.getConfiguration('algonote');
         originalProvider = config.get<string>('aiProvider');
         originalApiKey = config.get<string>('geminiApiKey');
     });

@@ -36,10 +36,10 @@ suite('Code Actions Provider Unit Test Suite', () => {
 
         const fillAction = actions.find(a => a.title === 'Fill placeholder using AI');
         assert.ok(fillAction);
-        assert.strictEqual(fillAction.command?.command, 'dsa-helper.fillDetails');
+        assert.strictEqual(fillAction.command?.command, 'algonote.fillDetails');
 
         const templateAction = actions.find(a => a.title === 'Enforce complete DSA template');
         assert.ok(templateAction);
-        assert.strictEqual(templateAction.command?.command, 'dsa-helper.enforceTemplate');
+        assert.strictEqual(templateAction.command?.command, 'algonote.enforceTemplate');
     });
 });

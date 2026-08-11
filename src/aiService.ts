@@ -17,14 +17,14 @@ interface DsaNotesResponse {
  * configured AI Provider: 'copilot' | 'gemini' | 'ollama' | 'custom'
  */
 export async function askAI(prompt: string, token?: vscode.CancellationToken): Promise<string> {
-    const config = vscode.workspace.getConfiguration('dsa-helper');
+    const config = vscode.workspace.getConfiguration('algonote');
     const provider = config.get<string>('aiProvider', 'copilot');
 
     if (provider === 'gemini') {
         const apiKey = config.get<string>('geminiApiKey', '');
         const model = config.get<string>('geminiModel', 'gemini-1.5-flash');
         if (!apiKey) {
-            throw new Error('Gemini API Key is missing. Go to Settings -> DSA Note Helper to set dsa-helper.geminiApiKey');
+            throw new Error('Gemini API Key is missing. Go to Settings -> AlgoNote to set algonote.geminiApiKey');
         }
         return queryGemini(apiKey, model, prompt);
     } 
@@ -53,7 +53,7 @@ export async function askCopilot(prompt: string, token?: vscode.CancellationToke
 }
 
 async function queryCopilot(prompt: string, token?: vscode.CancellationToken): Promise<string> {
-    const config = vscode.workspace.getConfiguration('dsa-helper');
+    const config = vscode.workspace.getConfiguration('algonote');
     const preferredFamily = config.get<string>('copilotModel', 'gpt-4o');
 
     let [model] = await vscode.lm.selectChatModels({ vendor: 'copilot', family: preferredFamily });
@@ -70,7 +70,7 @@ async function queryCopilot(prompt: string, token?: vscode.CancellationToken): P
     }
 
     if (!model) {
-        throw new Error('No AI models found in VS Code. Please ensure GitHub Copilot (or another LM provider extension) is installed and signed in, OR switch "dsa-helper.aiProvider" in settings to Gemini, Ollama, or Custom API.');
+        throw new Error('No AI models found in VS Code. Please ensure GitHub Copilot (or another LM provider extension) is installed and signed in, OR switch "algonote.aiProvider" in settings to Gemini, Ollama, or Custom API.');
     }
 
     const messages = [vscode.LanguageModelChatMessage.User(prompt)];
@@ -202,7 +202,7 @@ Respond with ONLY a raw JSON object (no markdown fences) matching this exact sha
   "edgeCases": "markdown bullet list of 2-3 edge cases"
 }`;
 
-    const config = vscode.workspace.getConfiguration('dsa-helper');
+    const config = vscode.workspace.getConfiguration('algonote');
     const provider = config.get<string>('aiProvider', 'copilot');
 
     await vscode.window.withProgress({

@@ -3,7 +3,7 @@ import { enforceTemplate } from './formatter';
 import { updateDiagnostics } from './linter';
 
 export function registerChatParticipant(context: vscode.ExtensionContext) {
-    const dsaParticipant = vscode.chat.createChatParticipant('dsa-helper.dsa', async (request, ctx, response, token) => {
+    const algoParticipant = vscode.chat.createChatParticipant('algonote.algo', async (request, ctx, response, token) => {
         const command = request.command;
 
         // Always use the model the user already has selected in Copilot chat.
@@ -17,7 +17,7 @@ export function registerChatParticipant(context: vscode.ExtensionContext) {
 
         if (command === 'lint') {
             // Run structural lint check
-            const collection = vscode.languages.createDiagnosticCollection('dsa-helper-temp');
+            const collection = vscode.languages.createDiagnosticCollection('algonote-temp');
             if (activeEditor) {
                 updateDiagnostics(activeEditor.document, collection);
             }
@@ -48,8 +48,8 @@ Briefly explain what each issue means for a student's notes and provide 1-line a
                 response.markdown(chunk);
             }
 
-            response.button({ command: 'dsa-helper.enforceTemplate', title: '$(tools) Enforce Template' });
-            response.button({ command: 'dsa-helper.fillDetails', title: '$(sparkle) Auto-fill with Copilot' });
+            response.button({ command: 'algonote.enforceTemplate', title: '$(tools) Enforce Template' });
+            response.button({ command: 'algonote.fillDetails', title: '$(sparkle) Auto-fill with Copilot' });
         }
         else if (command === 'mcq') {
             if (!activeEditor || !noteText) {
@@ -90,7 +90,7 @@ Format each question as:
             for await (const chunk of aiResponse.text) {
                 response.markdown(chunk);
             }
-            response.button({ command: 'dsa-helper.startQuiz', title: '$(beaker) Open Interactive Quiz' });
+            response.button({ command: 'algonote.startQuiz', title: '$(beaker) Open Interactive Quiz' });
         }
         else if (command === 'dryrun') {
             if (!activeEditor || !noteText) {
@@ -152,8 +152,8 @@ Provide a formal Big-O complexity analysis:
             response.markdown('✅ Template enforced. All standard sections are now present.');
         }
         else {
-            // Default help message when @dsa is invoked without a command
-            response.markdown(`## 🧠 DSA Note Helper
+            // Default help message when @algo is invoked without a command
+            response.markdown(`## 🧠 AlgoNote
 
 I'm your DSA study assistant. Here's what I can do:
 
@@ -165,10 +165,10 @@ I'm your DSA study assistant. Here's what I can do:
 | \`/complexity\` | Formal Big-O time & space analysis of your code |
 | \`/template\` | Enforce the standard DSA note structure |
 
-Open a DSA Markdown note and try \`@dsa /lint\`!`);
+Open a DSA Markdown note and try \`@algo /lint\`!`);
         }
     });
 
-    dsaParticipant.iconPath = new vscode.ThemeIcon('hubot');
-    context.subscriptions.push(dsaParticipant);
+    algoParticipant.iconPath = new vscode.ThemeIcon('hubot');
+    context.subscriptions.push(algoParticipant);
 }

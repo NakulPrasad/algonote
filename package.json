@@ -14,48 +14,48 @@
   ],
   "activationEvents": [
     "onLanguage:markdown",
-    "onView:dsa-helper-quiz",
-    "onView:dsa-helper-revision"
+    "onView:algonote-quiz",
+    "onView:algonote-revision"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "dsa-helper.enforceTemplate",
-        "title": "DSA Note: Enforce Template"
+        "command": "algonote.enforceTemplate",
+        "title": "AlgoNote: Enforce Template"
       },
       {
-        "command": "dsa-helper.fillDetails",
-        "title": "DSA Note: Fill Details with AI"
+        "command": "algonote.fillDetails",
+        "title": "AlgoNote: Fill Details with AI"
       },
       {
-        "command": "dsa-helper.startQuiz",
-        "title": "DSA Note: Start MCQ Quiz",
+        "command": "algonote.startQuiz",
+        "title": "AlgoNote: Start MCQ Quiz",
         "icon": "$(beaker)"
       },
       {
-        "command": "dsa-helper.showRevisionTree",
-        "title": "DSA Note: Refresh Revision Sidebar"
+        "command": "algonote.showRevisionTree",
+        "title": "AlgoNote: Refresh Revision Sidebar"
       }
     ],
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "dsa-helper-sidebar",
-          "title": "DSA Note Helper",
+          "id": "algonote-sidebar",
+          "title": "AlgoNote Helper",
           "icon": "$(book)"
         }
       ]
     },
     "views": {
-      "dsa-helper-sidebar": [
+      "algonote-sidebar": [
         {
-          "id": "dsa-helper-revision",
+          "id": "algonote-revision",
           "name": "Revision Dashboard",
           "type": "tree"
         },
         {
-          "id": "dsa-helper-quiz",
+          "id": "algonote-quiz",
           "name": "Active Recall Quiz",
           "type": "webview"
         }
@@ -63,10 +63,10 @@
     },
     "chatParticipants": [
       {
-        "id": "dsa-helper.dsa",
-        "fullName": "DSA Helper",
-        "name": "dsa",
-        "description": "DSA notes assistant for linting, templates, and complexity analysis",
+        "id": "algonote.algo",
+        "fullName": "AlgoNote",
+        "name": "algo",
+        "description": "AlgoNote assistant for linting, templates, and complexity analysis",
         "isSticky": true,
         "commands": [
           {
@@ -93,9 +93,9 @@
       }
     ],
     "configuration": {
-      "title": "DSA Note Helper",
+      "title": "AlgoNote",
       "properties": {
-        "dsa-helper.aiProvider": {
+        "algonote.aiProvider": {
           "type": "string",
           "default": "copilot",
           "enum": [
@@ -112,7 +112,7 @@
           ],
           "description": "Select AI Provider for generating note details and quiz questions."
         },
-        "dsa-helper.copilotModel": {
+        "algonote.copilotModel": {
           "type": "string",
           "default": "gpt-4o",
           "enum": [
@@ -123,37 +123,37 @@
           ],
           "description": "Copilot model family to use when Provider is set to 'copilot'."
         },
-        "dsa-helper.geminiApiKey": {
+        "algonote.geminiApiKey": {
           "type": "string",
           "default": "",
           "description": "API Key for Google Gemini API (Required if Provider is 'gemini')."
         },
-        "dsa-helper.geminiModel": {
+        "algonote.geminiModel": {
           "type": "string",
           "default": "gemini-1.5-flash",
           "description": "Gemini model name (e.g. gemini-1.5-flash, gemini-1.5-pro)."
         },
-        "dsa-helper.ollamaUrl": {
+        "algonote.ollamaUrl": {
           "type": "string",
           "default": "http://localhost:11434",
           "description": "Endpoint URL for local Ollama server (Required if Provider is 'ollama')."
         },
-        "dsa-helper.ollamaModel": {
+        "algonote.ollamaModel": {
           "type": "string",
           "default": "llama3",
           "description": "Ollama model name (e.g. llama3, mistral, qwen2.5-coder)."
         },
-        "dsa-helper.customEndpoint": {
+        "algonote.customEndpoint": {
           "type": "string",
           "default": "https://api.openai.com/v1",
           "description": "OpenAI-compatible API endpoint URL (Required if Provider is 'custom')."
         },
-        "dsa-helper.customApiKey": {
+        "algonote.customApiKey": {
           "type": "string",
           "default": "",
           "description": "API Key for Custom OpenAI-compatible API."
         },
-        "dsa-helper.customModel": {
+        "algonote.customModel": {
           "type": "string",
           "default": "gpt-4o",
           "description": "Model name for Custom API (e.g. gpt-4o, deepseek-chat, mistral-large)."

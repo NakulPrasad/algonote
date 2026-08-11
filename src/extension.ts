@@ -13,7 +13,7 @@ export function activate(context: vscode.ExtensionContext) {
     console.log('DSA Note Helper is active!');
 
     // 1. Register Format/Enforce Template Command
-    let enforceCmd = vscode.commands.registerCommand('dsa-helper.enforceTemplate', async () => {
+    let enforceCmd = vscode.commands.registerCommand('algonote.enforceTemplate', async () => {
         const editor = vscode.window.activeTextEditor;
         if (editor && editor.document.languageId === 'markdown') {
             try {
@@ -28,7 +28,7 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     // 2. Register AI Fill Details Command
-    let fillCmd = vscode.commands.registerCommand('dsa-helper.fillDetails', async () => {
+    let fillCmd = vscode.commands.registerCommand('algonote.fillDetails', async () => {
         const editor = vscode.window.activeTextEditor;
         if (editor && editor.document.languageId === 'markdown') {
             try {
@@ -43,17 +43,17 @@ export function activate(context: vscode.ExtensionContext) {
 
     // 3. Register MCQ View Command
     const mcqProvider = new McqViewProvider(context.extensionUri);
-    let startQuizCmd = vscode.commands.registerCommand('dsa-helper.startQuiz', async () => {
-        await vscode.commands.executeCommand('dsa-helper-quiz.focus');
+    let startQuizCmd = vscode.commands.registerCommand('algonote.startQuiz', async () => {
+        await vscode.commands.executeCommand('algonote-quiz.focus');
         await mcqProvider.generateQuiz();
     });
 
-    let openQuizPanelCmd = vscode.commands.registerCommand('dsa-helper.openQuizPanel', () => {
+    let openQuizPanelCmd = vscode.commands.registerCommand('algonote.openQuizPanel', () => {
         mcqProvider.openFullPanel();
     });
 
     // 4. Register Linter / Diagnostics Collection
-    const diagnosticCollection = vscode.languages.createDiagnosticCollection('dsa-note-helper');
+    const diagnosticCollection = vscode.languages.createDiagnosticCollection('algonote');
     
     if (vscode.window.activeTextEditor && vscode.window.activeTextEditor.document.languageId === 'markdown') {
         updateDiagnostics(vscode.window.activeTextEditor.document, diagnosticCollection);
@@ -96,11 +96,11 @@ export function activate(context: vscode.ExtensionContext) {
     // 9. Register Revision Tree View
     const revisionTreeProvider = new RevisionTreeProvider();
     let treeViewRegistration = vscode.window.registerTreeDataProvider(
-        'dsa-helper-revision',
+        'algonote-revision',
         revisionTreeProvider
     );
 
-    let refreshTreeCmd = vscode.commands.registerCommand('dsa-helper.showRevisionTree', () => {
+    let refreshTreeCmd = vscode.commands.registerCommand('algonote.showRevisionTree', () => {
         revisionTreeProvider.refresh();
     });
 

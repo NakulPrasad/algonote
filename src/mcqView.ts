@@ -10,7 +10,7 @@ export interface QuizQuestion {
 }
 
 export class McqViewProvider implements vscode.WebviewViewProvider {
-    public static readonly viewType = 'dsa-helper-quiz';
+    public static readonly viewType = 'algonote-quiz';
     private _view?: vscode.WebviewView;
 
     constructor(private readonly _extensionUri: vscode.Uri) { }
