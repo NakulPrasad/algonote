@@ -1,8 +1,8 @@
 {
   "name": "algonote",
-  "displayName": "AlgoNote",
-  "description": "Smart DSA note assistant: active recall quizzes, AI note fill, structural linting, and spaced repetition tracking.",
-  "version": "0.1.6",
+  "displayName": "AlgoNote AI",
+  "description": "Smart Note-First study companion: active recall quizzes, AI note fill, structural linting, and spaced repetition tracking.",
+  "version": "0.1.7",
   "publisher": "nakul",
   "engines": {
     "vscode": "^1.90.0"
