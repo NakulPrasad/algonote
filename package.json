@@ -1,8 +1,8 @@
 {
-  "name": "dsa-note-helper",
-  "displayName": "DSA Note Helper",
-  "description": "DSA note assistant: smart linting, AI fill (via GitHub Copilot), MCQ quiz, and revision tracking.",
-  "version": "0.1.3",
+  "name": "algonote",
+  "displayName": "AlgoNote",
+  "description": "Smart DSA note assistant: active recall quizzes, AI note fill, structural linting, and spaced repetition tracking.",
+  "version": "0.1.4",
   "publisher": "nakul",
   "engines": {
     "vscode": "^1.90.0"
@@ -165,11 +165,16 @@
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "package": "npm version patch --no-git-tag-version && npx @vscode/vsce package --no-dependencies --allow-missing-repository"
+    "package": "npm version patch --no-git-tag-version && npx @vscode/vsce package --no-dependencies --allow-missing-repository",
+    "test": "npm run compile && node ./out/test/runTest.js"
   },
   "devDependencies": {
+    "@types/mocha": "^10.0.6",
     "@types/node": "^16.11.7",
     "@types/vscode": "^1.85.0",
+    "@vscode/test-electron": "^2.3.9",
+    "glob": "^10.3.10",
+    "mocha": "^10.3.0",
     "typescript": "^4.9.5"
   }
 }

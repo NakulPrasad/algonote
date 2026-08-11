@@ -1,6 +1,6 @@
-# 🧠 DSA Note Helper (VS Code Extension)
+# 🧠 AlgoNote (VS Code Extension)
 
-**DSA Note Helper** is your ultimate study companion for Data Structures and Algorithms. It turns static problem-solving notes into interactive learning tools with AI note filling, active recall quizzes, Copilot chat integration, structural linting, and spaced repetition tracking.
+**AlgoNote** is your ultimate study companion for Data Structures and Algorithms. It turns static problem-solving notes into interactive learning tools with AI note filling, active recall quizzes, Copilot chat integration, structural linting, and spaced repetition tracking.
 
 ---
 

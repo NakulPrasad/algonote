@@ -60,8 +60,17 @@ async function queryCopilot(prompt: string, token?: vscode.CancellationToken): P
     if (!model) {
         [model] = await vscode.lm.selectChatModels({ vendor: 'copilot' });
     }
+    // Fallback: If no model with vendor 'copilot' is found, try to use any available Language Model
     if (!model) {
-        throw new Error('No GitHub Copilot model available. Please ensure GitHub Copilot is installed and signed in, OR switch "dsa-helper.aiProvider" in settings to Gemini, Ollama, or Custom API.');
+        const allModels = await vscode.lm.selectChatModels({});
+        if (allModels.length > 0) {
+            model = allModels[0];
+            console.log('Fell back to alternate model:', model.name, model.vendor);
+        }
+    }
+
+    if (!model) {
+        throw new Error('No AI models found in VS Code. Please ensure GitHub Copilot (or another LM provider extension) is installed and signed in, OR switch "dsa-helper.aiProvider" in settings to Gemini, Ollama, or Custom API.');
     }
 
     const messages = [vscode.LanguageModelChatMessage.User(prompt)];
