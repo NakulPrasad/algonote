@@ -87,11 +87,11 @@ interface QuizQuestion {
         }
     }
 
-    public openFullPanel() {
+    public openFullPanel(column: vscode.ViewColumn = vscode.ViewColumn.One) {
         const panel = vscode.window.createWebviewPanel(
             'dsaQuizPanel',
             '🧪 DSA Active Recall Quiz',
-            vscode.ViewColumn.One,
+            column,
             { enableScripts: true }
         );
 
@@ -123,6 +123,56 @@ interface QuizQuestion {
                 }
             }
         });
+    }
+
+    public async launchInBrowser() {
+        const activeEditor = vscode.window.activeTextEditor;
+        if (!activeEditor) {
+            vscode.window.showWarningMessage('Please open a DSA Markdown note file first.');
+            return;
+        }
+
+        const noteText = activeEditor.document.getText();
+        const prompt = `You are a DSA examiner. Based on this note:
+---
+${noteText.slice(0, 3000)}
+---
+
+Generate exactly 3 multiple-choice questions testing retention, edge cases, and time/space complexity.
+Output ONLY a raw JSON array matching this TS interface (no markdown formatting or extra text):
+interface QuizQuestion {
+    id: number;
+    question: string;
+    options: string[]; // 4 choices (A, B, C, D)
+    correctIndex: number; // 0, 1, 2, or 3
+    explanation: string;
+}`;
+
+        try {
+            let raw = await askCopilot(prompt);
+            raw = raw.trim();
+            if (raw.startsWith('```')) {
+                raw = raw.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
+            }
+
+            const questions: QuizQuestion[] = JSON.parse(raw);
+            const html = this._getHtmlForWebview(questions);
+
+            const workspaceFolders = vscode.workspace.workspaceFolders;
+            if (!workspaceFolders || workspaceFolders.length === 0) {
+                vscode.window.showWarningMessage('Please open a workspace first.');
+                return;
+            }
+
+            const tempFileUri = vscode.Uri.joinPath(workspaceFolders[0].uri, '.algonote-quiz-temp.html');
+            const encoder = new TextEncoder();
+            await vscode.workspace.fs.writeFile(tempFileUri, encoder.encode(html));
+
+            await vscode.env.openExternal(tempFileUri);
+            vscode.window.showInformationMessage('✅ Launched quiz in default web browser.');
+        } catch (e: any) {
+            vscode.window.showErrorMessage('Failed to generate quiz for browser: ' + e.message);
+        }
     }
 
     private _getHtmlForWebview(questions: QuizQuestion[]) {
@@ -188,11 +238,15 @@ interface QuizQuestion {
                 </div>
 
                 <script>
-                    const vscode = acquireVsCodeApi();
+                    const vscode = typeof acquireVsCodeApi === 'function' ? acquireVsCodeApi() : null;
 
                     function generate() {
-                        document.getElementById('quiz-container').innerHTML = '<p style="text-align:center;">⏳ Asking Copilot to generate questions...</p>';
-                        vscode.postMessage({ type: 'generateQuiz' });
+                        if (vscode) {
+                            document.getElementById('quiz-container').innerHTML = '<p style="text-align:center;">⏳ Asking Copilot to generate questions...</p>';
+                            vscode.postMessage({ type: 'generateQuiz' });
+                        } else {
+                            alert('To generate a new quiz, click the "Start MCQ Quiz" command inside VS Code.');
+                        }
                     }
 
                     function checkAnswer(btn, qIdx, optIdx, correctIdx, explanation) {
@@ -212,7 +266,9 @@ interface QuizQuestion {
                         fb.style.display = 'block';
                         fb.innerHTML = (isCorrect ? '✅ Correct! ' : '❌ Incorrect. ') + explanation;
 
-                        vscode.postMessage({ type: 'answerSelected', isCorrect, explanation });
+                        if (vscode) {
+                            vscode.postMessage({ type: 'answerSelected', isCorrect, explanation });
+                        }
                     }
                 </script>
             </body>

@@ -45,8 +45,22 @@ export function activate(context: vscode.ExtensionContext) {
     // 3. Register MCQ View Command
     const mcqProvider = new McqViewProvider(context.extensionUri);
     let startQuizCmd = vscode.commands.registerCommand('algonote.startQuiz', async () => {
-        await vscode.commands.executeCommand('algonote-quiz.focus');
-        await mcqProvider.generateQuiz();
+        const config = vscode.workspace.getConfiguration('algonote');
+        const location = config.get<string>('quizLocation', 'sidebar');
+
+        if (location === 'editor-one') {
+            mcqProvider.openFullPanel(vscode.ViewColumn.One);
+            await mcqProvider.generateQuiz();
+        } else if (location === 'editor-two') {
+            mcqProvider.openFullPanel(vscode.ViewColumn.Two);
+            await mcqProvider.generateQuiz();
+        } else if (location === 'browser') {
+            await mcqProvider.launchInBrowser();
+        } else {
+            // Default: sidebar
+            await vscode.commands.executeCommand('algonote-quiz.focus');
+            await mcqProvider.generateQuiz();
+        }
     });
 
     let openQuizPanelCmd = vscode.commands.registerCommand('algonote.openQuizPanel', () => {

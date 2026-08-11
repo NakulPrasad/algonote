@@ -2,8 +2,8 @@
   "name": "algonote",
   "displayName": "AlgoNote AI",
   "description": "Smart Note-First study companion: active recall quizzes, AI note fill, structural linting, and spaced repetition tracking.",
-  "version": "0.1.8",
-  "publisher": "NakulPrasad",
+  "version": "0.1.10",
+  "publisher": "NakulMahato",
   "engines": {
     "vscode": "^1.90.0"
   },
@@ -161,6 +161,23 @@
           "type": "string",
           "default": "gpt-4o",
           "description": "Model name for Custom API (e.g. gpt-4o, deepseek-chat, mistral-large)."
+        },
+        "algonote.quizLocation": {
+          "type": "string",
+          "default": "sidebar",
+          "enum": [
+            "sidebar",
+            "editor-one",
+            "editor-two",
+            "browser"
+          ],
+          "enumDescriptions": [
+            "Active Recall Quiz sidebar widget",
+            "Full panel in the main editor group (ViewColumn.One)",
+            "Full panel beside the main editor (ViewColumn.Two)",
+            "Web version opened in default web browser"
+          ],
+          "description": "Select where the Active Recall Quiz should be launched when starting a quiz."
         }
       }
     }
