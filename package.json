@@ -36,6 +36,10 @@
       {
         "command": "algonote.showRevisionTree",
         "title": "AlgoNote: Refresh Revision Sidebar"
+      },
+      {
+        "command": "algonote.createProblemNote",
+        "title": "AlgoNote: New Problem Note"
       }
     ],
     "viewsContainers": {

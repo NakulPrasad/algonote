@@ -7,6 +7,7 @@ import { registerChatParticipant } from './chatParticipant';
 import { McqViewProvider } from './mcqView';
 import { DsaCompletionProvider } from './completionProvider';
 import { RevisionTreeProvider } from './revisionTree';
+import { createProblemNote } from './noteCreator';
 import * as path from 'path';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -50,6 +51,11 @@ export function activate(context: vscode.ExtensionContext) {
 
     let openQuizPanelCmd = vscode.commands.registerCommand('algonote.openQuizPanel', () => {
         mcqProvider.openFullPanel();
+    });
+
+    // Register New Problem Note Command
+    let createProblemNoteCmd = vscode.commands.registerCommand('algonote.createProblemNote', async () => {
+        await createProblemNote();
     });
 
     // 4. Register Linter / Diagnostics Collection
@@ -131,6 +137,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(
         enforceCmd, fillCmd, startQuizCmd, openQuizPanelCmd, refreshTreeCmd,
+        createProblemNoteCmd,
         diagnosticCollection, changeListener, editorChangeListener,
         codeActionProvider, webviewRegistration, completionProvider,
         treeViewRegistration, createListener
