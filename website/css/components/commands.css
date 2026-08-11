@@ -1,0 +1,41 @@
+/* ==========================================================================
+   COMMANDS & CHAT SLASH COMMANDS COMPONENT
+   ========================================================================== */
+.commands-section {
+  padding: 6rem 0;
+}
+
+.commands-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 2rem;
+  font-size: 0.95rem;
+}
+
+.commands-table th {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-main);
+  text-align: left;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-subtle);
+  font-weight: 700;
+}
+
+.commands-table td {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+}
+
+.commands-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.cmd-badge {
+  font-family: var(--font-mono);
+  background: rgba(0, 242, 254, 0.1);
+  color: var(--accent-cyan);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}

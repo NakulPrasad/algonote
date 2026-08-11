@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AlgoNote — Note-First Study Companion for VS Code</title>
+  <meta name="description" content="Turn static DSA notes into interactive learning tools with Note-First Pre-flight Validation, AI Note Filling, Code-Blank MCQs, Mock Interviews, and Grill Mode.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Main Modular CSS -->
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+  <!-- Neural Network Particle Canvas Background -->
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="#" class="nav-brand">
+        <span class="brand-icon">🧠</span>
+        <span class="brand-text">Algo<span>Note</span></span>
+      </a>
+
+      <div class="nav-links">
+        <a href="#philosophy" class="nav-link">Note-First Philosophy</a>
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#commands" class="nav-link">Copilot Commands</a>
+        <a href="#demo" class="nav-link">Interactive MCQ</a>
+        <a href="#install" class="nav-link">Install</a>
+        <a href="https://github.com/NakulPrasad/algonote" target="_blank" rel="noopener" class="nav-cta">
+          <span>GitHub</span>
+          <span>★</span>
+        </a>
+      </div>
+
+      <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero container">
+    <div class="hero-badge fade-in-up">📝 Core Philosophy: Note-Taking First</div>
+    <h1 class="hero-title fade-in-up">Turn static DSA notes into <span>interactive learning machines</span></h1>
+    <p class="hero-subtitle fade-in-up">
+      The markdown note is the foundation of everything. Enforces a <strong>Pre-flight Check</strong> before quizzes, mock interviews, or grill mode to ensure your note and code are complete first.
+    </p>
+
+    <div class="hero-actions fade-in-up">
+      <a href="#install" class="btn-primary">
+        <span>⚡ Install Extension</span>
+      </a>
+      <a href="https://github.com/NakulPrasad/algonote" target="_blank" rel="noopener" class="btn-secondary">
+        <span>📖 GitHub Repository</span>
+      </a>
+    </div>
+
+    <!-- Floating Editor Mockup -->
+    <div class="editor-mockup fade-in-up">
+      <div class="editor-header">
+        <span class="editor-dot dot-red"></span>
+        <span class="editor-dot dot-yellow"></span>
+        <span class="editor-dot dot-green"></span>
+        <span class="editor-title">TwoSum.md — AlgoNote Pre-flight Check</span>
+      </div>
+      <div class="editor-body">
+        <div><span class="code-keyword">#</span> <span class="code-title">Two Sum</span></div>
+        <div><span class="code-keyword">##</span> <span class="code-section">Intuition & Core Approach</span> <span class="code-ai">✨ Verified</span></div>
+        <div>Use a HashMap to store values and their index complements in a single pass.</div>
+        <br>
+        <div><span class="code-keyword">##</span> <span class="code-section">Implementation (Java)</span></div>
+        <div><span class="code-keyword">public</span> <span class="code-keyword">int</span>[] twoSum(<span class="code-keyword">int</span>[] nums, <span class="code-keyword">int</span> target) {</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">// Pre-flight code verification passes syntax sanity check</span></div>
+        <div>}</div>
+        <br>
+        <div><span class="code-comment">🛡️ Pre-flight Check: All placeholders filled & code syntactically valid!</span></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Philosophy & Workflow Section -->
+  <section id="philosophy" class="workflow-section container">
+    <h2 class="section-title fade-in-up">Note-First Pre-flight Workflow</h2>
+    <p class="section-subtitle fade-in-up">No tests run until your study note foundation is solid.</p>
+
+    <div class="timeline">
+      <div class="timeline-step fade-in-up">
+        <div class="step-icon">🛡️</div>
+        <div class="glass-card step-content">
+          <div class="step-number">Step 1</div>
+          <h3 class="step-title">Pre-flight Validation (validator.ts)</h3>
+          <p class="step-desc">Running MCQ or Interview mode first scans for unfilled <code>[Placeholder]</code> tags and checks if Java code blocks are valid. If incomplete, it gently prompts: <em>"Finish your note first!"</em></p>
+          <span class="badge-tag">Structural Integrity Check</span>
+        </div>
+      </div>
+
+      <div class="timeline-step fade-in-up">
+        <div class="step-icon">🤖</div>
+        <div class="glass-card step-content">
+          <div class="step-number">Step 2</div>
+          <h3 class="step-title">AI Note Enrichment (aiService.ts)</h3>
+          <p class="step-desc">Use Quick Fixes 💡 or AI completion to fill in missing intuition, formal Big-O time & space complexities, and tricky edge cases automatically.</p>
+          <span class="badge-tag">Copilot / Gemini / Ollama</span>
+        </div>
+      </div>
+
+      <div class="timeline-step fade-in-up">
+        <div class="step-icon">👔</div>
+        <div class="glass-card step-content">
+          <div class="step-number">Step 3</div>
+          <h3 class="step-title">Note-Driven Mock Interview (@dsa /interview)</h3>
+          <p class="step-desc">AI acts as an interviewer reviewing your written solution in the file, asking targeted follow-up questions on data structure selection and duplicate edge cases.</p>
+          <span class="badge-tag">Copilot Chat Assistant</span>
+        </div>
+      </div>
+
+      <div class="timeline-step fade-in-up">
+        <div class="step-icon">🔥</div>
+        <div class="glass-card step-content">
+          <div class="step-number">Step 4</div>
+          <h3 class="step-title">Grill Mode & Code-Blank MCQs (@dsa /grill)</h3>
+          <p class="step-desc">Blanks out key lines from your <em>own written code</em> for code-completion recall, paired with timed challenge modes and window focus detection.</p>
+          <span class="badge-tag">Active Recall Testing</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Grid -->
+  <section id="features" class="features-section container">
+    <h2 class="section-title fade-in-up">Packed with Superpowers</h2>
+    <p class="section-subtitle fade-in-up">Designed specifically for algorithm mastery and tech interview prep.</p>
+
+    <div class="features-grid">
+      <div class="glass-card feature-card fade-in-up">
+        <div class="feature-icon">🛡️</div>
+        <h3 class="feature-title">Pre-flight Validation</h3>
+        <p class="feature-desc">Ensures notes have no unfilled placeholders and code is valid before starting quizzes or mock interviews.</p>
+      </div>
+
+      <div class="glass-card feature-card fade-in-up">
+        <div class="feature-icon">🧪</div>
+        <h3 class="feature-title">Code-Blank MCQs</h3>
+        <p class="feature-desc">Blanks out 1-2 lines from your own solution code inside notes to test true active recall and logic retention.</p>
+      </div>
+
+      <div class="glass-card feature-card fade-in-up">
+        <div class="feature-icon">👔</div>
+        <h3 class="feature-title">Note-Driven Interviews</h3>
+        <p class="feature-desc">Run <code>@dsa /interview</code> to trigger AI follow-up questions directly on your written approach and edge cases.</p>
+      </div>
+
+      <div class="glass-card feature-card fade-in-up">
+        <div class="feature-icon">🔥</div>
+        <h3 class="feature-title">Timed Grill Mode</h3>
+        <p class="feature-desc">Timed challenge based on your active note with anti-cheat window focus detection for interview pressure simulation.</p>
+      </div>
+
+      <div class="glass-card feature-card fade-in-up">
+        <div class="feature-icon">📊</div>
+        <h3 class="feature-title">Spaced Repetition</h3>
+        <p class="feature-desc">Activity Bar TreeView organizing workspace notes into "Due for Revision Today" vs "Upcoming".</p>
+      </div>
+
+      <div class="glass-card feature-card fade-in-up">
+        <div class="feature-icon">🤖</div>
+        <h3 class="feature-title">Multi-Provider AI Engine</h3>
+        <p class="feature-desc">Choose GitHub Copilot (zero setup!), Google Gemini API, Local Ollama, or Custom OpenAI API endpoints.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Commands & Chat Reference -->
+  <section id="commands" class="commands-section container">
+    <h2 class="section-title fade-in-up">Copilot Chat Commands</h2>
+    <p class="section-subtitle fade-in-up">Type @dsa in Copilot Chat sidebar to interact with your active note.</p>
+
+    <div class="glass-card fade-in-up" style="overflow-x: auto;">
+      <table class="commands-table">
+        <thead>
+          <tr>
+            <th>Command</th>
+            <th>Description</th>
+            <th>Pre-flight Check</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="cmd-badge">@dsa /interview</span></td>
+            <td>Launches note-driven mock interview asking follow-up questions on your code</td>
+            <td><span style="color: var(--accent-green);">Required ✓</span></td>
+          </tr>
+          <tr>
+            <td><span class="cmd-badge">@dsa /grill</span></td>
+            <td>Starts timed drill challenge with focus detection & code-blank questions</td>
+            <td><span style="color: var(--accent-green);">Required ✓</span></td>
+          </tr>
+          <tr>
+            <td><span class="cmd-badge">@dsa /mcq</span></td>
+            <td>Generates active recall practice questions with hidden collapsible spoilers</td>
+            <td><span style="color: var(--accent-green);">Required ✓</span></td>
+          </tr>
+          <tr>
+            <td><span class="cmd-badge">@dsa /lint</span></td>
+            <td>Scans active note and reports missing sections or un-replaced placeholders</td>
+            <td>Built-in</td>
+          </tr>
+          <tr>
+            <td><span class="cmd-badge">@dsa /dryrun</span></td>
+            <td>Outputs a step-by-step variable trace table for Java implementations</td>
+            <td>Built-in</td>
+          </tr>
+          <tr>
+            <td><span class="cmd-badge">@dsa /complexity</span></td>
+            <td>Performs formal Big-O time & space complexity analysis</td>
+            <td>Built-in</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Interactive Quiz Demo Section -->
+  <section id="demo" class="quiz-section container">
+    <h2 class="section-title fade-in-up">Try Code-Blank Active Recall</h2>
+    <p class="section-subtitle fade-in-up">Test yourself on missing code logic from your own notes.</p>
+
+    <div class="glass-card quiz-container fade-in-up">
+      <div class="quiz-header">
+        <span class="quiz-tag">🧪 Code-Blank MCQ</span>
+        <span style="font-size: 0.85rem; color: var(--text-dim);">TwoSum.java</span>
+      </div>
+
+      <div class="quiz-question">
+        Identify the missing line in the twoSum loop:<br>
+        <code>int complement = target - nums[i];</code><br>
+        <code>if (map.containsKey(complement)) return new int[]{ <span style="color:var(--accent-cyan);">/* ??? */</span> };</code>
+      </div>
+
+      <div class="quiz-options">
+        <button class="quiz-option" data-correct="false">A) nums[i], complement</button>
+        <button class="quiz-option" data-correct="true">B) map.get(complement), i</button>
+        <button class="quiz-option" data-correct="false">C) i, target</button>
+        <button class="quiz-option" data-correct="false">D) 0, i</button>
+      </div>
+
+      <div id="quiz-feedback" class="quiz-feedback"></div>
+    </div>
+  </section>
+
+  <!-- Installation Section -->
+  <section id="install" class="install-section container">
+    <h2 class="section-title fade-in-up">Quick Installation</h2>
+    <p class="section-subtitle fade-in-up">Install directly into VS Code via command line or VSIX file.</p>
+
+    <div class="glass-card install-box fade-in-up">
+      <p style="color: var(--text-muted);">Run in VS Code terminal or PowerShell:</p>
+      <div class="command-box">
+        <span id="cmd-text">code --install-extension algonote-0.1.4.vsix</span>
+        <button id="copy-cmd-btn" class="copy-btn">Copy</button>
+      </div>
+      <div style="margin-top: 1.5rem;">
+        <a href="https://github.com/NakulPrasad/algonote/releases" target="_blank" rel="noopener" class="btn-secondary" style="display: inline-flex;">
+          📦 Download Latest .VSIX Release
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>AlgoNote is open-source on <a href="https://github.com/NakulPrasad/algonote" target="_blank" rel="noopener">GitHub</a>.</p>
+      <p style="margin-top: 0.5rem;">Created with ❤️ by Nakul Prasad</p>
+    </div>
+  </footer>
+
+  <!-- Main ES6 JS Entry Module -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
+
