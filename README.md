@@ -1,71 +1,82 @@
-# 🧠 AlgoNote (VS Code Extension)
+# 🧠 AlgoNote AI (VS Code Extension)
 
-**AlgoNote** is your ultimate study companion for Data Structures and Algorithms. It turns static problem-solving notes into interactive learning tools with AI note filling, active recall quizzes, Copilot chat integration, structural linting, and spaced repetition tracking.
+**AlgoNote AI** is your ultimate note-first study companion for Data Structures and Algorithms. It turns static problem-solving notes into interactive learning tools with active recall quizzes, mock interview simulators, timed grill modes, structural linting, and spaced repetition revision tracking.
+
+🌐 **Website & Live Demo:** [https://nakulprasad.github.io/algonote/](https://nakulprasad.github.io/algonote/)  
+📦 **Download Latest Release:** [GitHub Release v0.1.11](https://github.com/NakulPrasad/algonote/releases/tag/v0.1.11)
+
+---
+
+## 📝 The Core Philosophy: Note-Taking First
+
+In **AlgoNote AI**, the study note is the foundation of everything. Before running active recall quizzes, interactive mock interviews, or timed grill modes, the extension runs a **Pre-flight Check**:
+1. **Template Completeness Check:** Verifies that your note template is fully filled with no empty fields or unresolved `[Placeholder]` tags.
+2. **Code Verification:** Checks that code inside the Java block is syntactically sound and ready before quizzing you on it.
 
 ---
 
 ## ✨ Features at a Glance
 
-### 1. 🤖 Multi-Provider AI Engine
+### 1. 🛡️ Pre-flight Note & Code Validation
+Runs automatic structural diagnostics on active notes, prompting you to finish filling out key templates and resolving code syntax issues before attempting practice sessions.
+
+### 2. 🧪 Code-Blank MCQs & Active Recall
+Practice questions are generated directly from your active note. The engine blanks out 1-2 lines from your *own code* inside the notes and quizzes you on identifying the missing logic.
+
+### 3. 💬 Copilot Chat Participant (`@algo`)
+Type `@algo` directly in the VS Code Copilot Chat sidebar to interact with your active note using specialized slash commands:
+- `@algo /interview`: Starts a note-driven mock interview where the AI reviews your approach and asks target follow-ups.
+- `@algo /grill`: Starts a timed drill session with anti-cheat window focus detection to simulate real interview pressure.
+- `@algo /mcq`: Generates 3 active recall questions with hidden collapsible spoiler answers.
+- `@algo /lint`: Audits active note structure for missing headers or placeholders.
+- `@algo /dryrun`: Generates step-by-step trace tables for your solutions.
+- `@algo /complexity`: Performs time and space complexity analysis.
+
+### 4. 🤖 Multi-Provider AI Engine
 Choose your favorite AI model in VS Code settings:
 - **GitHub Copilot** (Built-in via `vscode.lm` — zero API keys required!)
 - **Google Gemini API** (`gemini-1.5-flash`, `gemini-1.5-pro`)
 - **Local Ollama** (Offline LLMs like `llama3`, `mistral`, `qwen2.5-coder`)
 - **Custom OpenAI-Compatible API** (OpenRouter, DeepSeek, LocalAI, vLLM)
 
-### 2. 💬 Copilot Chat Participant (`@dsa`)
-Type `@dsa` directly in the VS Code Copilot Chat sidebar to interact with your active note:
-- `@dsa /lint`: Scans your note and reports missing sections or un-replaced placeholders.
-- `@dsa /mcq`: Generates 3 active recall quiz questions (with hidden collapsible answer spoilers).
-- `@dsa /dryrun`: Outputs a step-by-step variable trace table for your Java solution.
-- `@dsa /complexity`: Performs a formal Big-O time and space complexity breakdown.
-- `@dsa /template`: Enforces the standard Markdown template structure.
-
-### 3. 🧪 Interactive Active Recall Quiz Engine
-Practice and test your retention before interviews!
-- **Sidebar Quiz Webview**: Dedicated interactive quiz widget in the Activity Bar.
-- **Full Editor Tab**: Run `DSA Note: Open MCQ Quiz Panel` for a wide-screen quiz interface.
-- Instant green/red answer verification with detailed AI explanations.
-
-### 4. 🛡️ Structural Linter & Quick Fixes (Lightbulbs 💡)
-- Highlights missing mandatory section headers (`# Intuition`, `# Complexity`, `# Edge Cases`) and unfilled placeholders (e.g. `[Insert problem description here]`).
-- Click the VS Code **Quick Fix Lightbulb** 💡 to auto-fill missing details using AI or enforce standard formatting.
-
 ### 5. 📊 Revision Dashboard (Spaced Repetition)
-- Activity Bar TreeView (`dsa-helper-revision`) that organizes your workspace notes into **Due for Revision Today** vs **Upcoming** based on revision status.
+An Activity Bar TreeView (`algonote-revision`) that automatically scans your workspace markdown notes and organizes them into **Due for Revision Today** vs **Upcoming** folders.
 
 ### 6. ⚡ Smart Inline Completions & Snippets
-Type triggers in Markdown or Java files to auto-expand templates:
+Expand structural structures inside markdown and java files:
 - `dsa-dp-table` $\rightarrow$ Generates DP State Transition Table in Markdown.
 - `dsa-dryrun-table` $\rightarrow$ Inserts variable trace table skeleton.
-- `dsa-dsu` $\rightarrow$ Injects complete Java Disjoint Set Union (Union-Find) class implementation.
+- `dsa-dsu` $\rightarrow$ Injects complete Java Disjoint Set Union class implementation.
 
 ---
 
 ## ⚙️ Extension Settings
 
-Customize settings in `Settings -> DSA Note Helper` or your `settings.json`:
+Customize settings in `Settings -> AlgoNote AI` or your `settings.json`:
 
 ```json
 {
   // Select AI Provider: "copilot" | "gemini" | "ollama" | "custom"
-  "dsa-helper.aiProvider": "copilot",
+  "algonote.aiProvider": "copilot",
 
   // Copilot Model Preference
-  "dsa-helper.copilotModel": "gpt-4o",
+  "algonote.copilotModel": "gpt-4o",
 
   // Google Gemini Configuration
-  "dsa-helper.geminiApiKey": "YOUR_GEMINI_API_KEY",
-  "dsa-helper.geminiModel": "gemini-1.5-flash",
+  "algonote.geminiApiKey": "YOUR_GEMINI_API_KEY",
+  "algonote.geminiModel": "gemini-1.5-flash",
 
   // Local Ollama Configuration
-  "dsa-helper.ollamaUrl": "http://localhost:11434",
-  "dsa-helper.ollamaModel": "llama3",
+  "algonote.ollamaUrl": "http://localhost:11434",
+  "algonote.ollamaModel": "llama3",
 
   // Custom API Configuration (DeepSeek, OpenRouter, etc.)
-  "dsa-helper.customEndpoint": "https://api.deepseek.com/v1",
-  "dsa-helper.customApiKey": "YOUR_CUSTOM_KEY",
-  "dsa-helper.customModel": "deepseek-chat"
+  "algonote.customEndpoint": "https://api.deepseek.com/v1",
+  "algonote.customApiKey": "YOUR_CUSTOM_KEY",
+  "algonote.customModel": "deepseek-chat",
+
+  // Select where Quiz panel launches: "sidebar" | "editor-one" | "editor-two" | "browser"
+  "algonote.quizLocation": "sidebar"
 }
 ```
 
@@ -75,18 +86,20 @@ Customize settings in `Settings -> DSA Note Helper` or your `settings.json`:
 
 | Command Title | ID | Description |
 |:---|:---|:---|
-| **DSA Note: Enforce Template** | `dsa-helper.enforceTemplate` | Standardizes current Markdown note formatting |
-| **DSA Note: Fill Details with AI** | `dsa-helper.fillDetails` | Auto-fills intuition, Big-O complexity, and edge cases |
-| **DSA Note: Start MCQ Quiz** | `dsa-helper.startQuiz` | Focuses Quiz panel and generates AI questions |
-| **DSA Note: Open MCQ Quiz Panel** | `dsa-helper.openQuizPanel` | Opens quiz as a full editor tab |
-| **DSA Note: Refresh Revision Sidebar** | `dsa-helper.showRevisionTree` | Refreshes the revision tree view |
+| **AlgoNote: Enforce Template** | `algonote.enforceTemplate` | Standardizes current Markdown note formatting |
+| **AlgoNote: Fill Details with AI** | `algonote.fillDetails` | Auto-fills intuition, complexities, and edge cases |
+| **AlgoNote: Start MCQ Quiz** | `algonote.startQuiz` | Focuses Quiz panel and generates AI questions |
+| **AlgoNote: Open MCQ Quiz Panel** | `algonote.openQuizPanel` | Opens quiz as a full editor tab |
+| **AlgoNote: Refresh Revision Sidebar** | `algonote.showRevisionTree` | Refreshes the revision tree view |
+| **AlgoNote: New Problem Note** | `algonote.createProblemNote` | Creates a new note template file |
 
 ---
 
 ## 🚀 Installation
 
-Install the `.vsix` file using VS Code CLI:
+Install the `.vsix` package using VS Code CLI:
 
 ```powershell
-code --install-extension "dsa-note-helper-0.1.3.vsix"
+code --install-extension "algonote-0.1.11.vsix"
 ```
+
