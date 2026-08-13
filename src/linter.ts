@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-const PLACEHOLDERS = [
+export const PLACEHOLDERS = [
     /\[Insert problem description here\]/gi,
     /\[Provide justification\]/gi,
     /\[Describe edge case.*?\]/gi,
@@ -13,7 +13,7 @@ const PLACEHOLDERS = [
     /URL/g
 ];
 
-const REQUIRED_SECTIONS = [
+export const REQUIRED_SECTIONS = [
     { regex: /## 📝 Problem Statement/i, name: "Problem Statement" },
     { regex: /## 💡 Intuition & Core Approach/i, name: "Intuition & Core Approach" },
     { regex: /## 💻 Implementation/i, name: "Implementation" },

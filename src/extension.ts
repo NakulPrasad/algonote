@@ -9,9 +9,17 @@ import { DsaCompletionProvider } from './completionProvider';
 import { RevisionTreeProvider } from './revisionTree';
 import { createProblemNote } from './noteCreator';
 import * as path from 'path';
+import { IntegrationServer } from './server';
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('DSA Note Helper is active!');
+
+    // Start local integration server
+    const integrationServer = new IntegrationServer(context.extensionPath);
+    integrationServer.start().catch(err => {
+        console.error('Failed to start AlgoNote local server:', err);
+    });
+    context.subscriptions.push({ dispose: () => integrationServer.stop() });
 
     // 1. Register Format/Enforce Template Command
     let enforceCmd = vscode.commands.registerCommand('algonote.enforceTemplate', async () => {
@@ -43,28 +51,25 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     // 3. Register MCQ View Command
-    const mcqProvider = new McqViewProvider(context.extensionUri);
+    const mcqProvider = new McqViewProvider(context.extensionUri, integrationServer);
     let startQuizCmd = vscode.commands.registerCommand('algonote.startQuiz', async () => {
         const config = vscode.workspace.getConfiguration('algonote');
-        const location = config.get<string>('quizLocation', 'sidebar');
+        const location = config.get<string>('quizLocation', 'editor-one');
 
-        if (location === 'editor-one') {
-            mcqProvider.openFullPanel(vscode.ViewColumn.One);
-            await mcqProvider.generateQuiz();
-        } else if (location === 'editor-two') {
+        if (location === 'editor-two') {
             mcqProvider.openFullPanel(vscode.ViewColumn.Two);
             await mcqProvider.generateQuiz();
         } else if (location === 'browser') {
             await mcqProvider.launchInBrowser();
         } else {
-            // Default: sidebar
-            await vscode.commands.executeCommand('algonote-quiz.focus');
+            // Default: editor-one
+            mcqProvider.openFullPanel(vscode.ViewColumn.One);
             await mcqProvider.generateQuiz();
         }
     });
 
-    let openQuizPanelCmd = vscode.commands.registerCommand('algonote.openQuizPanel', () => {
-        mcqProvider.openFullPanel();
+    let openQuizPanelCmd = vscode.commands.registerCommand('algonote.openQuizPanel', (column?: vscode.ViewColumn) => {
+        mcqProvider.openFullPanel(column);
     });
 
     // Register New Problem Note Command

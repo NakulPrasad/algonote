@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { enforceTemplate } from './formatter';
 import { updateDiagnostics } from './linter';
+import { validateActiveNote } from './validator';
 
 export function registerChatParticipant(context: vscode.ExtensionContext) {
     const algoParticipant = vscode.chat.createChatParticipant('algonote.algo', async (request, ctx, response, token) => {
@@ -11,6 +12,11 @@ export function registerChatParticipant(context: vscode.ExtensionContext) {
         const model = request.model;
 
         const activeEditor = vscode.window.activeTextEditor;
+        
+        if (activeEditor && activeEditor.document.isDirty) {
+            await activeEditor.document.save();
+        }
+        
         const noteText = activeEditor?.document?.getText() ?? '';
 
         const systemPrompt = 'You are a specialized DSA (Data Structures & Algorithms) coding assistant. You help students write, review, and improve their problem-solving notes and code.';
@@ -56,6 +62,12 @@ Briefly explain what each issue means for a student's notes and provide 1-line a
                 response.markdown('Please open a DSA note first.');
                 return;
             }
+            
+            const validation = validateActiveNote(activeEditor.document);
+            if (!validation.isValid) {
+                response.markdown(`⚠️ **${validation.message}**\n\nUse \`@algo /template\` or fill in the missing details first.`);
+                return;
+            }
 
             const prompt = `${systemPrompt}
 
@@ -84,17 +96,27 @@ Format each question as:
 `;
 
             response.markdown('### 🧪 Active Recall Quiz\n\n');
-            const aiResponse = await model.sendRequest([
-                vscode.LanguageModelChatMessage.User(prompt)
-            ], {}, token);
-            for await (const chunk of aiResponse.text) {
-                response.markdown(chunk);
+            try {
+                const aiResponse = await model.sendRequest([
+                    vscode.LanguageModelChatMessage.User(prompt)
+                ], {}, token);
+                for await (const chunk of aiResponse.text) {
+                    response.markdown(chunk);
+                }
+                response.button({ command: 'algonote.startQuiz', title: '$(beaker) Open Interactive Quiz' });
+            } catch (err: any) {
+                response.markdown(`⚠️ **Error:** Failed to connect to AI provider. ${err.message}`);
             }
-            response.button({ command: 'algonote.startQuiz', title: '$(beaker) Open Interactive Quiz' });
         }
         else if (command === 'dryrun') {
             if (!activeEditor || !noteText) {
                 response.markdown('Please open a DSA note with a Java code block first.');
+                return;
+            }
+            
+            const validation = validateActiveNote(activeEditor.document);
+            if (!validation.isValid) {
+                response.markdown(`⚠️ **${validation.message}**\n\nFix your note before testing.`);
                 return;
             }
 
@@ -108,16 +130,26 @@ ${noteText.slice(0, 3000)}
 Create a step-by-step dry-run trace for a representative sample input. Format the trace as a Markdown table showing variable states at each step. Conclude with the final output and key observations.`;
 
             response.markdown('### 🔍 Dry Run Trace\n\n');
-            const aiResponse = await model.sendRequest([
-                vscode.LanguageModelChatMessage.User(prompt)
-            ], {}, token);
-            for await (const chunk of aiResponse.text) {
-                response.markdown(chunk);
+            try {
+                const aiResponse = await model.sendRequest([
+                    vscode.LanguageModelChatMessage.User(prompt)
+                ], {}, token);
+                for await (const chunk of aiResponse.text) {
+                    response.markdown(chunk);
+                }
+            } catch (err: any) {
+                response.markdown(`⚠️ **Error:** Failed to connect to AI provider. ${err.message}`);
             }
         }
         else if (command === 'complexity') {
             if (!activeEditor || !noteText) {
                 response.markdown('Please open a DSA note with a Java code block first.');
+                return;
+            }
+
+            const validation = validateActiveNote(activeEditor.document);
+            if (!validation.isValid) {
+                response.markdown(`⚠️ **${validation.message}**\n\nFix your note before testing.`);
                 return;
             }
 
@@ -135,11 +167,15 @@ Provide a formal Big-O complexity analysis:
 4. Suggest any improvements if applicable.`;
 
             response.markdown('### 📊 Complexity Analysis\n\n');
-            const aiResponse = await model.sendRequest([
-                vscode.LanguageModelChatMessage.User(prompt)
-            ], {}, token);
-            for await (const chunk of aiResponse.text) {
-                response.markdown(chunk);
+            try {
+                const aiResponse = await model.sendRequest([
+                    vscode.LanguageModelChatMessage.User(prompt)
+                ], {}, token);
+                for await (const chunk of aiResponse.text) {
+                    response.markdown(chunk);
+                }
+            } catch (err: any) {
+                response.markdown(`⚠️ **Error:** Failed to connect to AI provider. ${err.message}`);
             }
         }
         else if (command === 'template') {
@@ -150,6 +186,44 @@ Provide a formal Big-O complexity analysis:
             response.markdown('Enforcing the standard DSA template structure...\n\n');
             await enforceTemplate(activeEditor.document);
             response.markdown('✅ Template enforced. All standard sections are now present.');
+        }
+        else if (command === 'interview') {
+            if (!activeEditor || !noteText) {
+                response.markdown('Please open a DSA note first.');
+                return;
+            }
+            const validation = validateActiveNote(activeEditor.document);
+            if (!validation.isValid) {
+                response.markdown(`⚠️ **${validation.message}**\n\nUse \`@algo /template\` or fill in the missing details first.`);
+                return;
+            }
+            const prompt = `${systemPrompt}\n\nAct as a friendly but rigorous senior software engineer interviewing the student based on their notes.\n---\n${noteText.slice(0, 3000)}\n---\nAsk ONE targeted, challenging follow-up question about their implementation, edge cases, or complexity. Format your response beautifully using Markdown. Use bolding and code snippets where appropriate, and keep it under 3 short paragraphs.`;
+            response.markdown('### 👔 Mock Interview\n\n');
+            try {
+                const aiResponse = await model.sendRequest([vscode.LanguageModelChatMessage.User(prompt)], {}, token);
+                for await (const chunk of aiResponse.text) { response.markdown(chunk); }
+            } catch (err: any) {
+                response.markdown(`⚠️ **Error:** Failed to connect to AI provider. ${err.message}`);
+            }
+        }
+        else if (command === 'grill') {
+            if (!activeEditor || !noteText) {
+                response.markdown('Please open a DSA note first.');
+                return;
+            }
+            const validation = validateActiveNote(activeEditor.document);
+            if (!validation.isValid) {
+                response.markdown(`⚠️ **${validation.message}**\n\nUse \`@algo /template\` or fill in the missing details first.`);
+                return;
+            }
+            const prompt = `${systemPrompt}\n\nAct as an examiner conducting a high-pressure rapid-fire round.\n---\n${noteText.slice(0, 3000)}\n---\nGive the student a strict 3-minute rapid-fire challenge or code modification request based on their code (e.g. "How would you optimize this if memory was constrained to O(1)?"). Be direct, slightly intense, and use Markdown code blocks to reference their code.`;
+            response.markdown('### 🔥 Grill Mode\n\n');
+            try {
+                const aiResponse = await model.sendRequest([vscode.LanguageModelChatMessage.User(prompt)], {}, token);
+                for await (const chunk of aiResponse.text) { response.markdown(chunk); }
+            } catch (err: any) {
+                response.markdown(`⚠️ **Error:** Failed to connect to AI provider. ${err.message}`);
+            }
         }
         else {
             // Default help message when @algo is invoked without a command
@@ -164,6 +238,8 @@ I'm your DSA study assistant. Here's what I can do:
 | \`/dryrun\` | Produce a step-by-step variable trace table |
 | \`/complexity\` | Formal Big-O time & space analysis of your code |
 | \`/template\` | Enforce the standard DSA note structure |
+| \`/interview\` | Mock interview asking follow-ups on your implementation |
+| \`/grill\` | Timed rapid-fire challenge on your note |
 
 Open a DSA Markdown note and try \`@algo /lint\`!`);
         }

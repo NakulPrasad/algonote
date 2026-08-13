@@ -24,6 +24,6 @@ suite('MCQ View Provider Unit Test Suite', () => {
         );
 
         assert.strictEqual(mockWebview.options.enableScripts, true);
-        assert.ok(mockWebview.html.includes('⚡ Generate AI Quiz for Active Note'));
+        assert.ok(mockWebview.html.includes('⚡ Launch Quiz'));
     });
 });

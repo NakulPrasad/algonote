@@ -178,18 +178,19 @@ export async function fillMissingDetails(document: vscode.TextDocument) {
         title = titleMatch[1].replace(/\[(.*?)\]\(.*?\)/, '$1').trim();
     }
 
-    const javaMatch = text.match(/```java\n([\s\S]*?)\n```/);
-    if (!javaMatch) {
-        vscode.window.showWarningMessage('No Java code block found. Add your solution inside a ```java block first.');
+    const codeBlockMatch = text.match(/```(\w*)\n([\s\S]*?)\n```/);
+    if (!codeBlockMatch) {
+        vscode.window.showWarningMessage('No code block found. Add your solution inside a code block first.');
         return;
     }
-    const javaCode = javaMatch[1].trim();
+    const codeLang = codeBlockMatch[1] || 'code';
+    const solutionCode = codeBlockMatch[2].trim();
 
     const prompt = `You are an expert DSA assistant.
 Analyze this problem: "${title}"
-Java implementation:
-\`\`\`java
-${javaCode}
+${codeLang} implementation:
+\`\`\`${codeLang}
+${solutionCode}
 \`\`\`
 
 Respond with ONLY a raw JSON object (no markdown fences) matching this exact shape:

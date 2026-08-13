@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AlgoNote AI — Interactive DSA Playground</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Background Particles Canvas -->
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- Top Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <span class="brand-logo">🧠</span>
+      <span class="brand-text">Algo<span>Note AI</span></span>
+      <span class="brand-badge">Playground</span>
+    </div>
+    
+    <div class="nav-controls">
+      <div class="select-wrapper">
+        <select id="sample-notes-select" aria-label="Load Sample DSA Note">
+          <option value="" disabled selected>Select Sample Note...</option>
+          <option value="two-sum">Two Sum (HashMap)</option>
+          <option value="valid-parentheses">Valid Parentheses (Stack)</option>
+          <option value="binary-tree-inorder">Binary Tree Inorder (DFS)</option>
+        </select>
+      </div>
+      
+      <button id="preflight-btn" class="btn-secondary">🛡️ Run Pre-flight</button>
+      <button id="settings-toggle-btn" class="btn-icon" title="API Settings">⚙️</button>
+    </div>
+  </nav>
+
+  <!-- Settings Drawer Overlay -->
+  <div id="settings-drawer" class="settings-drawer">
+    <div class="drawer-header">
+      <h3>⚙️ API & AI Configuration</h3>
+      <button id="settings-close-btn" class="btn-close">&times;</button>
+    </div>
+    <div class="drawer-body">
+      <div class="setting-group">
+        <label for="ai-provider-select">AI Generation Provider</label>
+        <select id="ai-provider-select">
+          <option value="local">VS Code Local Server (Copilot)</option>
+          <option value="gemini">Google Gemini API Key (Direct)</option>
+          <option value="offline">Offline Rules & Heuristics</option>
+        </select>
+        <small class="helper-text">VS Code Local Server uses your active VS Code extension's Copilot instance. Offline requires no keys/network.</small>
+      </div>
+      
+      <div id="gemini-key-group" class="setting-group hidden">
+        <label for="gemini-api-key">Gemini API Key</label>
+        <input type="password" id="gemini-api-key" placeholder="AIzaSy...">
+        <small class="helper-text">Key is saved locally in your browser's localStorage.</small>
+      </div>
+
+      <div class="setting-group">
+        <label for="quiz-count">Default Questions</label>
+        <select id="quiz-count">
+          <option value="3" selected>3 Questions</option>
+          <option value="5">5 Questions</option>
+          <option value="10">10 Questions</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div id="drawer-backdrop" class="drawer-backdrop"></div>
+
+  <!-- Main Container -->
+  <main class="main-container">
+    
+    <!-- Left Workspace: Note Editor -->
+    <section class="editor-panel glass-panel">
+      <div class="panel-header">
+        <div class="panel-tab active">📝 dsa_note.md</div>
+        <div id="editor-status" class="editor-status">Lines: 0 | Chars: 0</div>
+      </div>
+      
+      <div class="editor-wrapper">
+        <div class="line-numbers" id="line-numbers">1</div>
+        <textarea id="markdown-editor" placeholder="Write or paste your DSA Markdown note here, or load a sample note from the dropdown above..." spellcheck="false" autocomplete="off"></textarea>
+      </div>
+
+      <div class="editor-footer">
+        <span id="validation-indicator" class="indicator-warning">⚠️ Checking note...</span>
+      </div>
+    </section>
+
+    <!-- Right Workspace: Console and Interactive Simulator -->
+    <section class="console-panel glass-panel">
+      <div class="console-tabs">
+        <button class="console-tab-btn active" data-tab="problems-tab">🛡️ Problems</button>
+        <button class="console-tab-btn" data-tab="quiz-tab">🧪 MCQ Quiz</button>
+        <button class="console-tab-btn" data-tab="interview-tab">👔 Mock Interview</button>
+        <button class="console-tab-btn" data-tab="grill-tab">🔥 Grill Mode</button>
+        <button class="console-tab-btn" data-tab="dryrun-tab">📊 Dry Run</button>
+        <button class="console-tab-btn" data-tab="complexity-tab">📈 Complexity</button>
+      </div>
+
+      <div class="console-content">
+        <!-- Problems Tab -->
+        <div id="problems-tab" class="tab-pane active">
+          <div class="problems-header">
+            <h4>Diagnostics warnings from linter</h4>
+          </div>
+          <div id="problems-list" class="problems-list">
+            <!-- Warnings list generated dynamically -->
+          </div>
+        </div>
+
+        <!-- MCQ Quiz Tab -->
+        <div id="quiz-tab" class="tab-pane">
+          <div class="quiz-controls">
+            <div class="control-row">
+              <label for="quiz-format-select">Format:</label>
+              <select id="quiz-format-select">
+                <option value="multiple-choice">Standard MCQ</option>
+                <option value="code-fill">Code Fill</option>
+                <option value="explain-concept">Explain Concept</option>
+              </select>
+              <button id="quiz-generate-btn" class="btn-primary">⚡ Generate Quiz</button>
+              <button id="quiz-settings-toggle-btn" class="btn-icon" title="API Settings">⚙️</button>
+            </div>
+            <div id="quiz-progress-container" class="quiz-progress-container hidden">
+              <div class="progress-bar-bg"><div id="quiz-progress-bar" class="progress-bar-fill"></div></div>
+              <span id="quiz-timer">Timer: 00:00</span>
+            </div>
+          </div>
+          
+          <div id="quiz-body" class="quiz-body">
+            <!-- Active Quiz Cards loaded here -->
+            <div class="welcome-screen">
+              <h3>🧪 Active Recall MCQ Quiz</h3>
+              <p>Test your knowledge on code completion, edge cases, and algorithmic complexity directly from your notes.</p>
+              <button id="quiz-start-cta" class="btn-secondary">Start Practice</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mock Interview Tab -->
+        <div id="interview-tab" class="tab-pane">
+          <div class="interview-container">
+            <div class="interview-header">
+              <div class="interviewer-profile">
+                <div class="interviewer-avatar">🤖</div>
+                <div class="interviewer-info">
+                  <strong>Interviewer: AlgoNode AI</strong>
+                  <span class="status-online">Online</span>
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <button id="interview-settings-toggle-btn" class="btn-icon" style="width: 28px; height: 28px; font-size: 0.85rem;" title="API Settings">⚙️</button>
+                <button id="reset-interview-btn" class="btn-danger-sm">Reset</button>
+              </div>
+            </div>
+            <div id="interview-messages" class="chat-messages">
+              <div class="message system-message">
+                <span>The interviewer is reading your note. Ask a question or click "Start Interview" to begin.</span>
+              </div>
+            </div>
+            <div id="chat-typing" class="chat-typing hidden">
+              <span>Interviewer is thinking</span><span class="dots">...</span>
+            </div>
+            <div class="chat-input-area">
+              <textarea id="chat-input" placeholder="Type your response to the interviewer's question..." rows="1" disabled></textarea>
+              <button id="chat-send-btn" class="btn-primary" disabled>Send</button>
+            </div>
+            <div class="interview-actions">
+              <button id="start-interview-btn" class="btn-primary-lg">👔 Start Mock Interview</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grill Mode Tab -->
+        <div id="grill-tab" class="tab-pane">
+          <div id="grill-intro" class="welcome-screen">
+            <h3>🔥 Timed Grill Mode Challenge</h3>
+            <p>Test your retention under extreme interview pressure.</p>
+            <ul class="grill-rules">
+              <li>⏱️ <strong>Rapid Fire:</strong> You have 20 seconds per question.</li>
+              <li>🚫 <strong>Anti-Cheat Focus:</strong> Tabbing away or leaving the window triggers a strike. 3 strikes and you fail!</li>
+              <li>🎯 <strong>High Stakes:</strong> Score at least 80% to pass the challenge.</li>
+            </ul>
+            <button id="start-grill-btn" class="btn-danger-lg">🔥 Accept Timed Challenge</button>
+          </div>
+
+          <div id="grill-play" class="grill-play-container hidden">
+            <div class="grill-header">
+              <div class="grill-score">Question <span id="grill-current-index">1</span>/<span id="grill-total-count">5</span></div>
+              <div class="grill-strikes">Strikes: <span id="grill-strike-counter">❌❌❌</span></div>
+              <div class="grill-timer-ring">
+                <svg width="40" height="40" viewBox="0 0 40 40">
+                  <circle cx="20" cy="20" r="16" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="3"></circle>
+                  <circle id="timer-circle-progress" cx="20" cy="20" r="16" fill="none" stroke="var(--accent-red)" stroke-width="3" stroke-dasharray="100.5" stroke-dashoffset="0" transform="rotate(-90 20 20)"></circle>
+                </svg>
+                <span id="grill-time-text">20</span>
+              </div>
+            </div>
+            
+            <div id="grill-question-card" class="card">
+              <!-- Dynamically populated question card -->
+            </div>
+          </div>
+
+          <div id="grill-cheat-overlay" class="grill-cheat-overlay hidden">
+            <div class="cheat-warning-card">
+              <h2>⚠️ FOCUS DETECTED AWAY!</h2>
+              <p>You have left the active window. An anti-cheat warning strike has been registered.</p>
+              <div class="strike-alert-symbols">❌</div>
+              <button id="resume-grill-btn" class="btn-danger">Resume Challenge</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dry Run Tab -->
+        <div id="dryrun-tab" class="tab-pane">
+          <div class="dryrun-container">
+            <div class="dryrun-header">
+              <h4>📊 Variable Trace Simulator</h4>
+              <div class="testcase-select-wrapper">
+                <select id="dryrun-testcase-select" aria-label="Select Testcase">
+                  <!-- Generated dynamically based on problem -->
+                  <option value="" disabled selected>Choose Test Case...</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="dryrun-split">
+              <!-- Code Section -->
+              <div class="dryrun-code-wrapper">
+                <pre id="dryrun-code-display"><code class="language-java">// Code will be loaded here</code></pre>
+              </div>
+              
+              <!-- Variable Trace Table -->
+              <div class="dryrun-table-wrapper">
+                <table id="trace-table" class="trace-table">
+                  <thead>
+                    <tr id="trace-header-row">
+                      <th>Line</th>
+                      <th>Explanation</th>
+                    </tr>
+                  </thead>
+                  <tbody id="trace-body">
+                    <!-- Step rows generated here -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="dryrun-controls">
+              <button id="dryrun-prev-btn" class="btn-secondary" disabled>⏮️ Prev</button>
+              <span id="dryrun-step-display">Step 0 / 0</span>
+              <button id="dryrun-next-btn" class="btn-secondary" disabled>Next ⏭️</button>
+              <button id="dryrun-play-btn" class="btn-primary-sm" style="margin-left: 10px;" disabled>▶️ Play</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Complexity Tab -->
+        <div id="complexity-tab" class="tab-pane">
+          <div class="complexity-container">
+            <h3>📈 Algorithmic Runtime Complexity</h3>
+            <p>See where your algorithm falls in the spectrum of Big-O complexity classifications.</p>
+            
+            <div class="complexity-layout">
+              <div class="chart-wrapper">
+                <svg id="complexity-svg" viewBox="0 0 500 350">
+                  <!-- Axis -->
+                  <line x1="40" y1="310" x2="480" y2="310" stroke="#64748b" stroke-width="2"></line>
+                  <line x1="40" y1="20" x2="40" y2="310" stroke="#64748b" stroke-width="2"></line>
+                  <!-- Labels -->
+                  <text x="470" y="330" fill="#94a3b8" font-size="12" text-anchor="end">Input Size (N)</text>
+                  <text x="20" y="30" fill="#94a3b8" font-size="12" transform="rotate(-90 20 30)" text-anchor="end">Operations</text>
+                  
+                  <!-- Curves -->
+                  <!-- O(1) -->
+                  <line x1="40" y1="290" x2="470" y2="290" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4" id="curve-o1"></line>
+                  <text x="475" y="294" fill="#10b981" font-size="11">O(1)</text>
+
+                  <!-- O(log N) -->
+                  <path d="M 40 310 Q 150 250 470 230" fill="none" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="4" id="curve-ologn"></path>
+                  <text x="475" y="234" fill="#3b82f6" font-size="11">O(log N)</text>
+
+                  <!-- O(N) -->
+                  <line x1="40" y1="310" x2="470" y2="100" stroke="#eab308" stroke-width="1.5" stroke-dasharray="4" id="curve-on"></line>
+                  <text x="475" y="104" fill="#eab308" font-size="11">O(N)</text>
+
+                  <!-- O(N log N) -->
+                  <path d="M 40 310 Q 250 180 440 30" fill="none" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="4" id="curve-onlogn"></path>
+                  <text x="445" y="34" fill="#a855f7" font-size="11">O(N log N)</text>
+
+                  <!-- O(N^2) -->
+                  <path d="M 40 310 Q 150 120 220 30" fill="none" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4" id="curve-on2"></path>
+                  <text x="225" y="34" fill="#ef4444" font-size="11">O(N²)</text>
+
+                  <!-- Active Note Highlight Point -->
+                  <circle id="active-complexity-point" cx="-10" cy="-10" r="7" fill="var(--accent-cyan)" stroke="#fff" stroke-width="2" class="glow-pulse"></circle>
+                </svg>
+              </div>
+
+              <div class="complexity-details glass-card">
+                <h4>Metric Analysis Summary</h4>
+                <div class="metric-block">
+                  <div class="metric-label">Time Complexity</div>
+                  <div id="active-time-complexity" class="metric-value">Pending note lint...</div>
+                </div>
+                <div class="metric-block">
+                  <div class="metric-label">Space Complexity</div>
+                  <div id="active-space-complexity" class="metric-value">Pending note lint...</div>
+                </div>
+                <div class="metric-block">
+                  <div class="metric-label">Efficiency Rank</div>
+                  <div id="active-efficiency-rank" class="metric-value">Unknown</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+  </main>
+
+  <!-- ES6 App Script -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

@@ -4,3 +4,4 @@ out/
 .vscode-test/
 6.*
 7.*
+.algonote-quiz-temp.html
