@@ -2,8 +2,12 @@
 
 **AlgoNote AI** is your ultimate note-first study companion for Data Structures and Algorithms. It turns static problem-solving notes into interactive learning tools with active recall quizzes, mock interview simulators, timed grill modes, structural linting, and spaced repetition revision tracking.
 
+[![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/NakulMahato.algonote?style=for-the-badge&logo=visual-studio-code&label=VS%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=NakulMahato.algonote)
+[![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/NakulMahato.algonote?style=for-the-badge)](https://marketplace.visualstudio.com/items?itemName=NakulMahato.algonote)
+
+🛍️ **VS Code Marketplace:** [https://marketplace.visualstudio.com/items?itemName=NakulMahato.algonote](https://marketplace.visualstudio.com/items?itemName=NakulMahato.algonote)  
 🌐 **Website & Live Demo:** [https://nakulprasad.github.io/algonote/](https://nakulprasad.github.io/algonote/)  
-📦 **Download Latest Release:** [GitHub Release v0.1.11](https://github.com/NakulPrasad/algonote/releases/tag/v0.1.11)
+📦 **Download Latest Release:** [GitHub Release v0.1.19](https://github.com/NakulPrasad/algonote/releases/tag/v0.1.19)
 
 ---
 
