@@ -2,8 +2,9 @@
   "name": "algonote",
   "displayName": "AlgoNote AI",
   "description": "Smart Note-First study companion: active recall quizzes, AI note fill, structural linting, and spaced repetition tracking.",
-  "version": "0.1.18",
+  "version": "0.1.19",
   "publisher": "NakulMahato",
+  "icon": "icon.png",
   "engines": {
     "vscode": "^1.90.0"
   },

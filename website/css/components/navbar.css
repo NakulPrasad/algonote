@@ -33,6 +33,14 @@
   font-size: 1.5rem;
 }
 
+.brand-logo-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.4);
+}
+
 .brand-text span {
   background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
   -webkit-background-clip: text;
