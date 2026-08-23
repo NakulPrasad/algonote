@@ -11,6 +11,24 @@
 
 ---
 
+## 💡 Motivation: Why AlgoNote AI?
+
+Most developers solve hundreds of DSA and LeetCode problems, but **struggle with long-term retention and real interview recall**. The standard workflow is flawed:
+- **Passive Note-Taking:** We write solutions in Markdown or Notion and never look at them again.
+- **The "Illusion of Competence":** Rereading a solution feels familiar, but when asked in an interview, you draw a blank because you didn't practice active retrieval.
+- **Scattered Revision:** No systematic way to track which patterns (Sliding Window, Trees, Graphs, DP) need revision today versus next week.
+- **Context Switching:** Jumping between browser tabs, notes apps, and code editors breaks focus and flow.
+
+**AlgoNote AI was built to solve this right inside your code editor.**
+
+It transforms static Markdown notes into an **interactive, note-first active recall system**:
+1. **Enforces Deep Understanding First:** You write your intuition and code before AI allows testing.
+2. **True Active Recall:** Tests you on your *own* notes and blanks out key lines from your *own* code.
+3. **Realistic Interview Simulation:** AI acts as a tough technical interviewer challenging edge cases directly in VS Code.
+4. **Built-in Spaced Repetition:** Ensures you review problems right before forgetting them.
+
+---
+
 ## 📝 The Core Philosophy: Note-Taking First
 
 In **AlgoNote AI**, the study note is the foundation of everything. Before running active recall quizzes, interactive mock interviews, or timed grill modes, the extension runs a **Pre-flight Check**:
