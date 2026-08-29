@@ -1,8 +1,9 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { askAI } from './aiService';
+import { getTemplateContent, renderTemplate, DEFAULT_TEMPLATE } from './templateService';
 
-interface ProblemDetails {
+export interface ProblemDetails {
     title: string;
     difficulty: 'Easy' | 'Medium' | 'Hard' | 'Basic';
     topic: string;
@@ -70,8 +71,9 @@ Ensure the difficulty is strictly one of "Easy", "Medium", "Hard", or "Basic".`;
                 prefix = 'B';
             }
 
-            // Construct standard content
-            const noteContent = generateNoteContent(details);
+            // Construct content using active template (custom or default)
+            const templateString = await getTemplateContent();
+            const noteContent = generateNoteContent(details, templateString);
 
             // Construct filename
             const cleanTitle = details.title.replace(/[\/\\?%*:|"<>]/g, '');
@@ -101,63 +103,23 @@ Ensure the difficulty is strictly one of "Easy", "Medium", "Hard", or "Basic".`;
             const doc = await vscode.workspace.openTextDocument(fileUri);
             await vscode.window.showTextDocument(doc);
 
-            vscode.window.showInformationMessage(`✅ Successfully created note for: "${details.title}"`);
+            vscode.window.showInformationMessage(`🎉 Successfully created note for: "${details.title}"`);
         } catch (e: any) {
             vscode.window.showErrorMessage(`Failed to create note: ${e.message}`);
         }
     });
 }
 
-export function generateNoteContent(details: ProblemDetails): string {
-    return `# ${details.title}
-
-> **Difficulty:** ${details.difficulty}  
-> **Topic / Pattern:** ${details.topic}  
-> **Link:** [${details.title}](${details.link})
-
----
-
-## 📝 Problem Statement
-
-${details.description.trim()}
-
-### Examples
-\`\`\`text
-${details.examples.trim()}
-\`\`\`
-
----
-
-## 💡 Intuition & Core Approach
-
-* **The Core Idea:** [Insert core algorithmic intuition here]
-* **Key Steps:**
-  - [Step 1]
-  - [Step 2]
-
----
-
-## 💻 Implementation (Java)
-
-\`\`\`java
-${details.starterCode.trim()}
-\`\`\`
-
----
-
-## 📊 Complexity Analysis
-
-| Metric | Complexity | Explanation |
-| :--- | :--- | :--- |
-| **Time Complexity** | $O(N)$ | [Provide justification] |
-| **Space Complexity** | $O(1)$ | [Provide justification] |
-
----
-
-## ⚠️ Edge Cases & Pitfalls to Avoid
-
-* **Edge Case 1:** [Describe edge case and handling]
-`;
+export function generateNoteContent(details: ProblemDetails, templateString: string = DEFAULT_TEMPLATE): string {
+    return renderTemplate(templateString, {
+        title: details.title,
+        difficulty: details.difficulty,
+        topic: details.topic,
+        link: details.link,
+        description: details.description.trim(),
+        examples: details.examples.trim(),
+        starterCode: details.starterCode.trim()
+    });
 }
 
 async function checkFileExists(uri: vscode.Uri): Promise<boolean> {

@@ -25,7 +25,8 @@ suite('Linter Unit Test Suite', () => {
 
         const diagnostics = diagnosticCollection.get(mockDoc.uri) || [];
         assert.strictEqual(diagnostics.length, 1);
-        assert.strictEqual(diagnostics[0].code, 'dsa-missing-header');
+        assert.strictEqual(diagnostics[0].code, 'algonote-missing-header');
+        assert.strictEqual(diagnostics[0].source, 'AlgoNote AI');
         assert.ok(diagnostics[0].message.includes('Missing structural sections'));
     });
 
@@ -58,14 +59,11 @@ Time | O(N)
         updateDiagnostics(mockDoc, diagnosticCollection);
 
         const diagnostics = diagnosticCollection.get(mockDoc.uri) || [];
-        // Should catch the [Insert problem description here] and [Describe edge case and handling] placeholders
-        // Wait, check the regexes in PLACEHOLDERS:
-        // /\[Insert problem description here\]/gi,
-        // /\[Describe edge case.*?\]/gi, etc.
         assert.ok(diagnostics.length >= 2, `Expected at least 2 diagnostics, got ${diagnostics.length}`);
         
         const codes = diagnostics.map(d => d.code);
-        assert.ok(codes.includes('dsa-placeholder'));
-        assert.ok(!codes.includes('dsa-missing-header'), 'Should not report missing headers if all headers exist');
+        assert.ok(codes.includes('algonote-placeholder'));
+        assert.ok(!codes.includes('algonote-missing-header'), 'Should not report missing headers if all headers exist');
+        assert.strictEqual(diagnostics[0].source, 'AlgoNote AI');
     });
 });

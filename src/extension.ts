@@ -8,6 +8,7 @@ import { McqViewProvider } from './mcqView';
 import { DsaCompletionProvider } from './completionProvider';
 import { RevisionTreeProvider } from './revisionTree';
 import { createProblemNote } from './noteCreator';
+import { openOrCreateTemplateFile, getTemplateContent, renderTemplate } from './templateService';
 import * as path from 'path';
 import { IntegrationServer } from './server';
 
@@ -36,7 +37,16 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    // 2. Register AI Fill Details Command
+    // 2. Register Customize Template Command
+    let customizeTemplateCmd = vscode.commands.registerCommand('algonote.customizeTemplate', async () => {
+        try {
+            await openOrCreateTemplateFile();
+        } catch (e: any) {
+            vscode.window.showErrorMessage(`Failed to open template: ${e.message}`);
+        }
+    });
+
+    // 3. Register AI Fill Details Command
     let fillCmd = vscode.commands.registerCommand('algonote.fillDetails', async () => {
         const editor = vscode.window.activeTextEditor;
         if (editor && editor.document.languageId === 'markdown') {
@@ -50,7 +60,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    // 3. Register MCQ View Command
+    // 4. Register MCQ View Command
     const mcqProvider = new McqViewProvider(context.extensionUri, integrationServer);
     let startQuizCmd = vscode.commands.registerCommand('algonote.startQuiz', async () => {
         const config = vscode.workspace.getConfiguration('algonote');
@@ -77,7 +87,7 @@ export function activate(context: vscode.ExtensionContext) {
         await createProblemNote();
     });
 
-    // 4. Register Linter / Diagnostics Collection
+    // 5. Register Linter / Diagnostics Collection
     const diagnosticCollection = vscode.languages.createDiagnosticCollection('algonote');
     
     if (vscode.window.activeTextEditor && vscode.window.activeTextEditor.document.languageId === 'markdown') {
@@ -96,29 +106,29 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    // 5. Register Code Actions (Quick Fixes)
+    // 6. Register Code Actions (Quick Fixes)
     let codeActionProvider = vscode.languages.registerCodeActionsProvider(
         'markdown',
         new DsaCodeActionProvider(),
         { providedCodeActionKinds: DsaCodeActionProvider.providedCodeActionKinds }
     );
 
-    // 6. Register Chat Participant
+    // 7. Register Chat Participant
     registerChatParticipant(context);
 
-    // 7. Register MCQ Webview View
+    // 8. Register MCQ Webview View
     let webviewRegistration = vscode.window.registerWebviewViewProvider(
         McqViewProvider.viewType,
         mcqProvider
     );
 
-    // 8. Register Inline Completion
+    // 9. Register Inline Completion
     let completionProvider = vscode.languages.registerInlineCompletionItemProvider(
         [{ language: 'markdown' }, { language: 'java' }],
         new DsaCompletionProvider()
     );
 
-    // 9. Register Revision Tree View
+    // 10. Register Revision Tree View
     const revisionTreeProvider = new RevisionTreeProvider();
     let treeViewRegistration = vscode.window.registerTreeDataProvider(
         'algonote-revision',
@@ -129,7 +139,7 @@ export function activate(context: vscode.ExtensionContext) {
         revisionTreeProvider.refresh();
     });
 
-    // 10. Auto-Template on File Create
+    // 11. Auto-Template on File Create
     let createListener = vscode.workspace.onDidCreateFiles(async (event) => {
         for (const fileUri of event.files) {
             if (fileUri.path.endsWith('.md')) {
@@ -142,7 +152,11 @@ export function activate(context: vscode.ExtensionContext) {
                 else if (basename.startsWith("H. ")) difficulty = "Hard";
                 else if (basename.startsWith("B. ")) difficulty = "Basic";
 
-                const template = `# ${title}\n\n> **Difficulty:** ${difficulty}  \n> **Topic / Pattern:** [Topic]  \n> **Link:** [Platform](URL)\n\n---\n\n## 📝 Problem Statement\n\n[Insert problem description here]\n\n### Examples\n\`\`\`text\nInput: \nOutput: \n\`\`\`\n\n---\n\n## 💡 Intuition & Core Approach\n\n* **The Core Idea:** [Insert core algorithmic intuition here]\n* **Key Steps:**\n  - [Step 1]\n  - [Step 2]\n\n---\n\n## 🎨 Visualization / Dry Run\n\n[If applicable, embed visual diagram/illustration here]\n![visualization](images/image-name.png)\n\n---\n\n## 💻 Implementation (Java)\n\n\`\`\`java\nclass Solution {\n    // Write code here\n}\n\`\`\`\n\n---\n\n## 📊 Complexity Analysis\n\n| Metric | Complexity | Explanation |\n| :--- | :--- | :--- |\n| **Time Complexity** | $O(N)$ | [Provide justification] |\n| **Space Complexity** | $O(1)$ | [Provide justification] |\n\n---\n\n## ⚠️ Edge Cases & Pitfalls to Avoid\n\n* **Edge Case 1:** [Describe edge case and handling]\n`;
+                const templateString = await getTemplateContent();
+                const template = renderTemplate(templateString, {
+                    title,
+                    difficulty
+                });
 
                 const edit = new vscode.WorkspaceEdit();
                 edit.insert(fileUri, new vscode.Position(0, 0), template);
@@ -155,7 +169,7 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     context.subscriptions.push(
-        enforceCmd, fillCmd, startQuizCmd, openQuizPanelCmd, refreshTreeCmd,
+        enforceCmd, customizeTemplateCmd, fillCmd, startQuizCmd, openQuizPanelCmd, refreshTreeCmd,
         createProblemNoteCmd,
         diagnosticCollection, changeListener, editorChangeListener,
         codeActionProvider, webviewRegistration, completionProvider,

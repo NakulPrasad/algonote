@@ -2,7 +2,7 @@
   "name": "algonote",
   "displayName": "AlgoNote AI",
   "description": "Smart Note-First study companion: active recall quizzes, AI note fill, structural linting, and spaced repetition tracking.",
-  "version": "0.1.19",
+  "version": "0.1.21",
   "publisher": "NakulMahato",
   "icon": "icon.png",
   "engines": {
@@ -24,6 +24,11 @@
       {
         "command": "algonote.enforceTemplate",
         "title": "AlgoNote: Enforce Template"
+      },
+      {
+        "command": "algonote.customizeTemplate",
+        "title": "AlgoNote: Edit / Customize Note Template",
+        "icon": "$(file-code)"
       },
       {
         "command": "algonote.fillDetails",
@@ -108,6 +113,11 @@
     "configuration": {
       "title": "AlgoNote",
       "properties": {
+        "algonote.customTemplatePath": {
+          "type": "string",
+          "default": "",
+          "description": "Custom path to a Markdown template file (relative to workspace or absolute). If empty, AlgoNote checks .algonote/template.md, TEMPLATE.md, or uses the built-in standard template."
+        },
         "algonote.strictPreflightCheck": {
           "type": "boolean",
           "default": true,

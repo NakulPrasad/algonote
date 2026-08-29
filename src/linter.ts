@@ -39,7 +39,8 @@ export function updateDiagnostics(document: vscode.TextDocument, collection: vsc
                 `Placeholder needs to be filled: "${match[0]}"`,
                 vscode.DiagnosticSeverity.Warning
             );
-            diagnostic.code = 'dsa-placeholder';
+            diagnostic.source = 'AlgoNote AI';
+            diagnostic.code = 'algonote-placeholder';
             diagnostics.push(diagnostic);
         }
     }
@@ -57,10 +58,11 @@ export function updateDiagnostics(document: vscode.TextDocument, collection: vsc
         const range = new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 50));
         const diagnostic = new vscode.Diagnostic(
             range,
-            `Missing structural sections: ${missingSections.join(', ')}. Use @dsa /template or Quick Fixes to add them.`,
+            `Missing structural sections: ${missingSections.join(', ')}. Use @algo /template or Quick Fixes to add them.`,
             vscode.DiagnosticSeverity.Warning
         );
-        diagnostic.code = 'dsa-missing-header';
+        diagnostic.source = 'AlgoNote AI';
+        diagnostic.code = 'algonote-missing-header';
         diagnostics.push(diagnostic);
     }
 

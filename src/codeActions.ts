@@ -9,9 +9,9 @@ export class DsaCodeActionProvider implements vscode.CodeActionProvider {
         const actions: vscode.CodeAction[] = [];
 
         for (const diagnostic of context.diagnostics) {
-            if (diagnostic.code === 'dsa-placeholder') {
+            if (diagnostic.code === 'algonote-placeholder' || diagnostic.code === 'dsa-placeholder') {
                 actions.push(this.createAiFillAction(document, diagnostic));
-            } else if (diagnostic.code === 'dsa-missing-header') {
+            } else if (diagnostic.code === 'algonote-missing-header' || diagnostic.code === 'dsa-missing-header') {
                 actions.push(this.createTemplateFix(document, diagnostic));
             }
         }

@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import { getTemplateContent, renderTemplate } from './templateService';
 
-export async function enforceTemplate(document: vscode.TextDocument) {
+export async function enforceTemplate(document: vscode.TextDocument): Promise<void> {
     const text = document.getText();
     const basename = path.basename(document.fileName);
 
@@ -37,7 +38,7 @@ export async function enforceTemplate(document: vscode.TextDocument) {
     const codeBlockRegex = /```(\w*)\n([\s\S]*?)\n```/g;
     let match;
     let examples = "";
-    let javaCode = "";
+    let starterCode = "";
     
     while ((match = codeBlockRegex.exec(text)) !== null) {
         const lang = match[1];
@@ -46,7 +47,7 @@ export async function enforceTemplate(document: vscode.TextDocument) {
         if (code.includes("Input:") || code.includes("Output:") || code.includes("Input :") || code.includes("Output :") || code.includes("Input=")) {
             examples += code + "\n\n";
         } else if (lang === 'java' || code.includes("class ") || code.includes("public ") || code.includes("static ") || (code.includes("int ") && code.includes("return "))) {
-            javaCode = code;
+            starterCode = code;
         }
     }
 
@@ -59,14 +60,14 @@ export async function enforceTemplate(document: vscode.TextDocument) {
 
     // Extract Problem Statement (Description)
     let description = "[Insert problem description here]";
-    const descMatch = text.match(/## 📝 Problem Statement([\s\S]*?)(?:###|##|```)/);
+    const descMatch = text.match(/## 📋 Problem Statement([\s\S]*?)(?:###|##|```)/i);
     if (descMatch && descMatch[1].trim()) {
         description = descMatch[1].trim();
     }
 
     // Extract Intuition
     let intuition = "* **The Core Idea:** [Insert core algorithmic intuition here]\n* **Key Steps:**\n  - [Step 1]\n  - [Step 2]";
-    const intuitionMatch = text.match(/## 💡 Intuition & Core Approach([\s\S]*?)(?:##|🎨|💻|📊|⚠️)/);
+    const intuitionMatch = text.match(/## 💡 Intuition & Core Approach([\s\S]*?)(?:##|🎨|💻|📊|⚠️)/i);
     if (intuitionMatch && intuitionMatch[1].trim()) {
         intuition = intuitionMatch[1].trim();
     }
@@ -77,6 +78,9 @@ export async function enforceTemplate(document: vscode.TextDocument) {
     let visMatch;
     while ((visMatch = visRegex.exec(text)) !== null) {
         visualization += `![visualization](${visMatch[1]})\n`;
+    }
+    if (!visualization.trim()) {
+        visualization = "[If applicable, embed visual diagram/illustration here]\n![visualization](images/image-name.png)";
     }
 
     // Extract Complexity Analysis
@@ -100,72 +104,34 @@ export async function enforceTemplate(document: vscode.TextDocument) {
 
     // Extract Edge Cases
     let edgeCases = "* **Edge Case 1:** [Describe edge case and handling]";
-    const edgeMatch = text.match(/## ⚠️ Edge Cases & Pitfalls to Avoid([\s\S]*?)$/);
+    const edgeMatch = text.match(/## ⚠️ Edge Cases & Pitfalls to Avoid([\s\S]*?)$/i);
     if (edgeMatch && edgeMatch[1].trim()) {
         edgeCases = edgeMatch[1].trim();
     }
 
-    // Standardize variables
-    if (!javaCode) {
-        javaCode = `class Solution {\n    // Write code here\n}`;
+    if (!starterCode) {
+        starterCode = `class Solution {\n    // Write code here\n}`;
     }
     if (!examples) {
         examples = "Input: \nOutput: ";
     }
 
-    // Build standard template content
-    let newContent = `# ${title}
-
-> **Difficulty:** ${difficulty}  
-> **Topic / Pattern:** ${topic}  
-> **Link:** [${title}](${link})
-
----
-
-## 📝 Problem Statement
-
-${description}
-
-### Examples
-\`\`\`text
-${examples.trim()}
-\`\`\`
-
----
-
-## 💡 Intuition & Core Approach
-
-${intuition}
-`;
-
-    if (visualization.trim()) {
-        newContent += `\n---\n\n## 🎨 Visualization / Dry Run\n\n${visualization.trim()}\n`;
-    }
-
-    newContent += `
----
-
-## 💻 Implementation (Java)
-
-\`\`\`java
-${javaCode}
-\`\`\`
-
----
-
-## 📊 Complexity Analysis
-
-| Metric | Complexity | Explanation |
-| :--- | :--- | :--- |
-| **Time Complexity** | ${timeComplexity} | [Provide justification] |
-| **Space Complexity** | ${spaceComplexity} | [Provide justification] |
-
----
-
-## ⚠️ Edge Cases & Pitfalls to Avoid
-
-${edgeCases}
-`;
+    // Render formatted note with user's active template
+    const templateString = await getTemplateContent();
+    const newContent = renderTemplate(templateString, {
+        title,
+        difficulty,
+        topic,
+        link: link || 'URL',
+        description,
+        examples: examples.trim(),
+        intuition,
+        visualization: visualization.trim(),
+        starterCode,
+        timeComplexity,
+        spaceComplexity,
+        edgeCases
+    });
 
     // Write back to document
     const edit = new vscode.WorkspaceEdit();
